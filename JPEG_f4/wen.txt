@@ -1,0 +1,86 @@
+#include "std_testcase.h"
+
+#ifndef _WIN32
+#include <wchar.h>
+#endif
+
+namespace CWE401_Memory_Leak__new_array_twointsStruct_12
+{
+
+#ifndef OMITBAD
+
+void bad()
+{
+    twoIntsStruct * data;
+    data = NULL;
+    if(globalReturnsTrueOrFalse())
+    {
+        /* POTENTIAL FLAW: Allocate memory on the heap */
+        data = new twoIntsStruct[100];
+        /* Initialize and make use of data */
+        data[0].intOne = 0;
+        data[0].intTwo = 0;
+        printStructLine(&data[0]);
+    }
+    else
+    {
+        /* FIX: Use memory allocated on the stack */
+        twoIntsStruct dataGoodBuffer[100];
+        data = dataGoodBuffer;
+        /* Initialize and make use of data */
+        data[0].intOne = 0;
+        data[0].intTwo = 0;
+        printStructLine(&data[0]);
+    }
+    if(globalReturnsTrueOrFalse())
+    {
+        /* POTENTIAL FLAW: No deallocation */
+        ; /* empty statement needed for some flow variants */
+    }
+    else
+    {
+        /* FIX: Deallocate memory */
+        delete[] data;
+    }
+}
+
+#endif /* OMITBAD */
+
+#ifndef OMITGOOD
+
+/* goodB2G() - use badsource and goodsink by changing the first "if" so that
+   both branches use the BadSource and the second "if" so that both branches
+   use the GoodSink */
+static void goodB2G()
+{
+    twoIntsStruct * data;
+    data = NULL;
+    if(globalReturnsTrueOrFalse())
+    {
+        /* POTENTIAL FLAW: Allocate memory on the heap */
+        data = new twoIntsStruct[100];
+        /* Initialize and make use of data */
+        data[0].intOne = 0;
+        data[0].intTwo = 0;
+        printStructLine(&data[0]);
+    }
+    else
+    {
+        /* POTENTIAL FLAW: Allocate memory on the heap */
+        data = new twoIntsStruct[100];
+        /* Initialize and make use of data */
+        data[0].intOne = 0;
+        data[0].intTwo = 0;
+        printStructLine(&data[0]);
+    }
+    if(globalReturnsTrueOrFalse())
+    {
+        /* FIX: Deallocate memory */
+        delete[] data;
+    }
+    else
+    {
+        /* FIX: Deallocate memory */
+        delete[] data;
+    }
+}
